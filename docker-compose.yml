@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  mycookingrecipes-api:
+    image: ${DOCKER_REGISTRY-}api
+    container_name: MyCookingRecipes.Api
+    build:
+      context: .
+      dockerfile: src/API/Dockerfile
+    ports:
+      - 5001:443
+
+  mycookingrecipes-postgres:
+    image: postgres:latest
+    container_name: MyCookingRecipes.PostgreSql
+    environment:
+      - POSTGRES_DB=mycookingrecipes
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  mycookingrecipes-seq:
+    image: datalust/seq:latest
+    container_name: mycookingrecipes.seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8081:80
+
