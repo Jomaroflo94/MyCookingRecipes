@@ -2,7 +2,7 @@
 
 namespace API.Middleware;
 
-public class RequestLogContextMiddleware
+internal class RequestLogContextMiddleware
 {
     private readonly RequestDelegate _next;
 

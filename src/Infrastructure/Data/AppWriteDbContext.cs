@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Domain.Categories;
 using Domain.Ingredients;
 using Domain.Recipes;
 using Domain.Tags;
@@ -21,6 +22,7 @@ public sealed class AppWriteDbContext : DbContext, IUnitOfWork
     public DbSet<RecipeTag> RecipeTags { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<Unit> Units { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

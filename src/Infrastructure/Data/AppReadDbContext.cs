@@ -1,5 +1,4 @@
-﻿using Domain.Units;
-using Infrastructure.Data.Entities;
+﻿using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
@@ -13,7 +12,8 @@ internal sealed class AppReadDbContext : DbContext
     public DbSet<RecipeStepRead> Steps { get; set; }
     public DbSet<RecipeTagRead> RecipeTags { get; set; }
     public DbSet<IngredientRead> Ingredients { get; set; }
-    public DbSet<Unit> Units { get; set; }
+    public DbSet<UnitRead> Units { get; set; }
+    public DbSet<CategoryRead> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

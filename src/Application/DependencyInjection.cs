@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Behaviors;
+using Domain.Tags;
 using FluentValidation;
 using Mediator.Application;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,5 +19,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(
             typeof(DependencyInjection).Assembly,
             includeInternalTypes: true);
+
+        services.AddScoped<ITagService, TagService>();
     }
 }

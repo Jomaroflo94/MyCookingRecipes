@@ -1,5 +1,6 @@
 ﻿using Domain.Shared;
 using Mediator.Domain;
+using Primitives;
 using ROP;
 
 namespace Domain.Tags;

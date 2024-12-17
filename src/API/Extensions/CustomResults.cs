@@ -2,7 +2,7 @@
 
 namespace API.Extensions;
 
-public static class CustomResults
+internal static class CustomResults
 {
     public static IResult Problem(Result result)
     {

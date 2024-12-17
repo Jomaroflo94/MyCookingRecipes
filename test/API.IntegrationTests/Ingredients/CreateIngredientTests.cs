@@ -22,7 +22,7 @@ public class CreateIngredientTests : BaseIntegrationTest
 
         // Act
         HttpResponseMessage response = await HttpClient
-            .PostAsJsonAsync("api/ingredients", request);
+            .PostAsJsonAsync("api/ingredient", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -46,7 +46,7 @@ public class CreateIngredientTests : BaseIntegrationTest
 
         // Act
         HttpResponseMessage response = await HttpClient
-            .PostAsJsonAsync("api/ingredients", request);
+            .PostAsJsonAsync("api/ingredient", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -68,7 +68,7 @@ public class CreateIngredientTests : BaseIntegrationTest
 
         // Act
         HttpResponseMessage response = await HttpClient
-            .PostAsJsonAsync("api/ingredients", request);
+            .PostAsJsonAsync("api/ingredient", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -81,9 +81,9 @@ public class CreateIngredientTests : BaseIntegrationTest
         var request = new CreateIngredientRequest("Ingredient", 1);
 
         // Act
-        await HttpClient.PostAsJsonAsync("api/ingredients", request);
+        await HttpClient.PostAsJsonAsync("api/ingredient", request);
 
-        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/ingredients", request);
+        HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/ingredient", request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);

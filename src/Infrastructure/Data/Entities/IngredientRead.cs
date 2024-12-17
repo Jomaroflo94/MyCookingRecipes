@@ -15,4 +15,5 @@ internal class IngredientRead
     // Relationships
     public TagRead Tag { get; set; }
     public IEnumerable<RecipeIngredientRead> RecipeIngredients { get; set; }
+    public IEnumerable<CategoryRead> Categories { get; set; }
 }

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configurations.Read;
-internal class UnitReadConfiguration : IEntityTypeConfiguration<UnitRead>
+internal class CategoryReadConfiguration : IEntityTypeConfiguration<CategoryRead>
 {
-    public void Configure(EntityTypeBuilder<UnitRead> builder)
+    public void Configure(EntityTypeBuilder<CategoryRead> builder)
     {
         builder.HasKey(u => u.Id);
     }

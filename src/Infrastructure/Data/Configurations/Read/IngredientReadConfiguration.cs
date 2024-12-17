@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.Entities;
+﻿using Domain.Categories;
+using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,11 +12,15 @@ internal sealed class IngredientReadConfiguration : IEntityTypeConfiguration<Ing
         builder.HasKey(u => u.Id);
 
         builder.HasOne(s => s.Tag)
-              .WithOne()
-              .HasForeignKey<IngredientRead>(s => s.TagId);
+            .WithOne()
+            .HasForeignKey<IngredientRead>(s => s.TagId);
 
         builder.HasMany(t => t.RecipeIngredients)
             .WithOne(rt => rt.Ingredient)
             .HasForeignKey(rt => rt.IngredientId);
+
+        builder.HasMany(t => t.Categories)
+            .WithMany(s => s.Ingredients)
+            .UsingEntity(j => j.ToTable("IngredientCategories"));
     }
 }

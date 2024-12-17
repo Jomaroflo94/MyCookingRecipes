@@ -1,4 +1,5 @@
-﻿using Domain.Ingredients;
+﻿using Domain.Categories;
+using Domain.Ingredients;
 using Domain.Recipes;
 using Domain.Tags;
 using Microsoft.EntityFrameworkCore;
@@ -35,5 +36,9 @@ internal sealed class IngredientConfiguration : IEntityTypeConfiguration<Ingredi
         builder.HasMany<RecipeIngredient>()
             .WithOne()
             .HasForeignKey(rt => rt.IngredientId);
+
+        builder.HasMany<Category>()
+              .WithMany(s => s.Ingredients)
+              .UsingEntity(j => j.ToTable("IngredientCategories"));
     }
 }

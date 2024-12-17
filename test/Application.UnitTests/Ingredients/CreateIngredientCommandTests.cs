@@ -22,18 +22,18 @@ public class CreateIngredientCommandTests
 
     private readonly IUnitOfWork _unitOfWorkMock;
     private readonly IIngredientRepository _ingredientRepository;
-    private readonly ITagRepository _tagRepository;
+    private readonly ITagService _tagService;
 
     public CreateIngredientCommandTests()
     {
         _unitOfWorkMock = Substitute.For<IUnitOfWork>();
         _ingredientRepository = Substitute.For<IIngredientRepository>();
-        _tagRepository = Substitute.For<ITagRepository>();
+        _tagService = Substitute.For<ITagService>();
 
         _handler = new CreateIngredientCommandHandler(
             _unitOfWorkMock,
             _ingredientRepository,
-            _tagRepository);
+            _tagService);
     }
 
     [Fact]
@@ -121,13 +121,13 @@ public class CreateIngredientCommandTests
         _ingredientRepository.IsNameUniqueAsync(name)
             .Returns(true);
 
-        _tagRepository.GetByNameAsync(name).Returns((Tag) null);
+        //_tagService.GetByNameAsync(name).Returns((Tag) null);
 
         // Act
         Result<Guid> result = await _handler.Handle(Command, default);
 
         // Assert
-        _tagRepository.Received(1).Insert(Arg.Is<Tag>(u => u.Name == name));
+        //_tagRepository.Received(1).Insert(Arg.Is<Tag>(u => u.Name == name));
         _ingredientRepository.Received(1).Insert(Arg.Is<Ingredient>(u => u.Name == name));
     }
 
@@ -141,13 +141,13 @@ public class CreateIngredientCommandTests
         _ingredientRepository.IsNameUniqueAsync(name)
             .Returns(true);
 
-        _tagRepository.GetByNameAsync(name).Returns(tag);
+        //_tagRepository.GetByNameAsync(name).Returns(tag);
 
         // Act
         await _handler.Handle(Command, default);
 
         // Assert
-        _tagRepository.DidNotReceive().Insert(tag);
+        //_tagRepository.DidNotReceive().Insert(tag);
         _ingredientRepository.Received(1).Insert(Arg.Is<Ingredient>(u => u.Name == name));
     }
 

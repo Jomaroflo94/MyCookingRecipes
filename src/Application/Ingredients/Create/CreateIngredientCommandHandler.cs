@@ -10,10 +10,11 @@ namespace Application.Ingredients.Create;
 
 internal sealed class CreateIngredientCommandHandler(IUnitOfWork unitOfWork,
     IIngredientRepository ingredientRepository,
-    ITagRepository tagRepository) 
+    ITagService tagService) 
     : ICommandHandler<CreateIngredientCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(CreateIngredientCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateIngredientCommand command, 
+        CancellationToken cancellationToken)
     {
         return await Result.Combine(
                 Text.Create(command.Name)
@@ -23,9 +24,11 @@ internal sealed class CreateIngredientCommandHandler(IUnitOfWork unitOfWork,
             .Bind(async data => await CreateIngredient(data, cancellationToken));
     }
 
-    private async Task<Result<Guid>> CreateIngredient((Text, PDecimal) data, CancellationToken cancellationToken)
+    private async Task<Result<Guid>> CreateIngredient((Text, PDecimal) data, 
+        CancellationToken cancellationToken)
     {
-        var ingredient = Ingredient.Create(await GetTagId(data.Item1, cancellationToken),
+        var ingredient = Ingredient.Create(await tagService.GetTagAsync(
+                data.Item1, cancellationToken),
             data.Item1, data.Item2, DateTime.UtcNow);
 
         ingredientRepository.Insert(ingredient);
@@ -35,24 +38,10 @@ internal sealed class CreateIngredientCommandHandler(IUnitOfWork unitOfWork,
         return ingredient.Id;
     }
 
-    private async Task<bool> IsNameUnique(Text Name, CancellationToken cancellationToken)
+    private async Task<bool> IsNameUnique(Text Name, 
+        CancellationToken cancellationToken)
     {
-        return await ingredientRepository.IsNameUniqueAsync(Name, cancellationToken);
-    }
-
-    private async Task<Guid> GetTagId(Text Name, CancellationToken cancellationToken)
-    {
-        Tag? tag = await tagRepository.GetByNameAsync(Name, cancellationToken);
-
-        return tag == null ? CreateTag(Name) : tag.Id;
-    }
-
-    private Guid CreateTag(Text Name)
-    {
-        var tag = Tag.Create(Guid.NewGuid(), Name, DateTime.UtcNow);
-
-        tagRepository.Insert(tag);
-
-        return tag.Id;
+        return await ingredientRepository
+            .IsNameUniqueAsync(Name, cancellationToken);
     }
 }

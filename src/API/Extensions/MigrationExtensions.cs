@@ -12,7 +12,7 @@ internal static class MigrationExtensions
         using AppWriteDbContext dbContext =
             scope.ServiceProvider.GetRequiredService<AppWriteDbContext>();
 
-        dbContext.Database.EnsureDeleted();//TODO: SOLO DESARROLLO
+        dbContext.Database.EnsureDeleted();
         dbContext.Database.Migrate();
     }
 }
