@@ -1,11 +1,8 @@
 ﻿namespace Infrastructure.Data.Entities;
-internal class TagRead
+internal class TagRead : EntityRead
 {
-    public required Guid Id { get; set; }
     public required string Name { get; set; }
-    public required DateTime CreatedOnUtc { get; set; }
-    public DateTime? UpdatedUtc { get; set; }
 
-    // Relationships
-    public IEnumerable<RecipeTagRead> RecipeTags { get; set; }
+    // RelationsShips
+    public IEnumerable<RecipeRead> Recipes { get; set; }
 }

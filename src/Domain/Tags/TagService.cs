@@ -1,12 +1,12 @@
 ﻿using Domain.Shared;
-using Primitives;
+using Primitives.Guards;
 
 namespace Domain.Tags;
 
 public sealed class TagService(
     ITagRepository tagRepository) : ITagService
 {
-    public async Task<Guid> GetTagAsync(Text Name, 
+    public async Task<Ulid> GetTagAsync(Text Name, 
         CancellationToken cancellationToken)
     {
         Tag? tag = await tagRepository
@@ -15,7 +15,7 @@ public sealed class TagService(
         return tag == null ? CreateTag(Name) : tag.Id;
     }
 
-    public async Task<IEnumerable<(Guid Id, Text Name)>> GetTagsAsync(
+    public async Task<IEnumerable<(Ulid Id, Text Name)>> GetTagsAsync(
         List<Text> Names, 
         CancellationToken cancellationToken)
     {
@@ -34,31 +34,31 @@ public sealed class TagService(
         var relation = Names.Join(tags, name => name, tag => tag.Name,
                 (a, b) => new { Name = a, b.Id });
 
-        IEnumerable<(Guid, Text)> createdTags = CreateTags(relation
-            .Where(w => w.Id.Equals(Guid.Empty))
+        IEnumerable<(Ulid, Text)> createdTags = CreateTags(relation
+            .Where(w => w.Id.Equals(Ulid.Empty))
             .Select(s => s.Name).ToList());
 
-        return relation.Where(w => !w.Id.Equals(Guid.Empty))
+        return relation.Where(w => !w.Id.Equals(Ulid.Empty))
             .Select(s => (s.Id, s.Name))
             .Concat(createdTags);
     }
 
-    public Guid CreateTag(Text Name)
+    public Ulid CreateTag(Text Name)
     {
         Ensure.NotNull(Name);
 
-        var tag = Tag.Create(Guid.NewGuid(), Name, DateTime.UtcNow);
+        var tag = Tag.Create(Ulid.NewUlid(), Name, DateTime.UtcNow);
 
         tagRepository.Insert(tag);
 
         return tag.Id;
     }
 
-    public IEnumerable<(Guid Id, Text Name)> CreateTags(
+    public IEnumerable<(Ulid Id, Text Name)> CreateTags(
         List<Text> Names)
     {
         var tags = Names
-            .Select(s => Tag.Create(Guid.NewGuid(), s, DateTime.UtcNow))
+            .Select(s => Tag.Create(Ulid.NewUlid(), s, DateTime.UtcNow))
             .ToList();
 
         tagRepository.Insert(tags);

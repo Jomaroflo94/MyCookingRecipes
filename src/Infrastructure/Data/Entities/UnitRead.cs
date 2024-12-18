@@ -1,10 +1,9 @@
 ﻿namespace Infrastructure.Data.Entities;
-internal class UnitRead
+internal class UnitRead : EntityRead
 {
-    public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required string Symbol { get; set; }
 
-    //RelationsShips
+    // RelationsShips
     public RecipeIngredientRead RecipeIngredient { get; set; }
 }

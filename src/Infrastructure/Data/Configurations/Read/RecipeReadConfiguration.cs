@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.Entities;
+﻿using Infrastructure.Data.Converters;
+using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,16 +10,20 @@ internal class RecipeReadConfiguration : IEntityTypeConfiguration<RecipeRead>
     {
         builder.HasKey(u => u.Id);
 
-        builder.HasMany(r => r.Ingredients)
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
+        builder.HasMany(r => r.RecipeIngredients)
               .WithOne(i => i.Recipe)
               .HasForeignKey(i => i.RecipeId);
 
-        builder.HasMany(r => r.Steps)
+        builder.HasMany(r => r.RecipeSteps)
               .WithOne(s => s.Recipe)
               .HasForeignKey(s => s.RecipeId);
 
-        builder.HasMany(r => r.Tags)
-              .WithOne(rt => rt.Recipe)
-              .HasForeignKey(rt => rt.RecipeId);
+        builder.HasMany(rt => rt.Tags)
+            .WithMany(t => t.Recipes)
+            .UsingEntity(j => j.ToTable("recipe_tag"));
     }
 }

@@ -44,7 +44,7 @@ internal sealed class CreateIngredientsCommandHandler(IUnitOfWork unitOfWork,
         (Text, PDecimal)[] data, 
         CancellationToken cancellationToken)
     {
-        IEnumerable<(Guid Id, Text Name)> tags = await tagService.GetTagsAsync(
+        IEnumerable<(Ulid Id, Text Name)> tags = await tagService.GetTagsAsync(
             data.Select(s => s.Item1).ToList(), 
             cancellationToken);
 

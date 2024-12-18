@@ -1,4 +1,5 @@
-﻿using Infrastructure.Outbox;
+﻿using Infrastructure.Data.Converters;
+using Infrastructure.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +9,10 @@ internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Outb
 {
     public void Configure(EntityTypeBuilder<OutboxMessage> builder)
     {
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
         builder.ToTable("OutboxMessages");
     }
 }

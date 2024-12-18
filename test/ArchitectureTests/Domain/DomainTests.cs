@@ -40,7 +40,7 @@ public class DomainTests : BaseTest
     {
         TestResult result = Types.InAssembly(DomainAssembly)
             .That()
-            .Inherit(typeof(Entity))
+            .Inherit(typeof(MediatorEntity))
             .Should()
             .BeSealed()
             .GetResult();
@@ -53,7 +53,7 @@ public class DomainTests : BaseTest
     {
         IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
             .That()
-            .Inherit(typeof(Entity))
+            .Inherit(typeof(MediatorEntity))
             .GetTypes();
 
         var failingTypes = new List<Type>();
@@ -78,7 +78,7 @@ public class DomainTests : BaseTest
     {
         IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
             .That()
-            .Inherit(typeof(Entity))
+            .Inherit(typeof(MediatorEntity))
             .GetTypes();
 
         var missingErrorClasses = new List<string>();
@@ -107,7 +107,7 @@ public class DomainTests : BaseTest
     {
         IEnumerable<Type> entityTypes = Types.InAssembly(DomainAssembly)
             .That()
-            .Inherit(typeof(Entity))
+            .Inherit(typeof(MediatorEntity))
             .GetTypes();
 
         var missingRepositories = new List<string>();

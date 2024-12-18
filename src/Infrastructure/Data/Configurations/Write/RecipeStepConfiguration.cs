@@ -1,4 +1,5 @@
 ﻿using Domain.Recipes;
+using Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,6 +10,10 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
     public void Configure(EntityTypeBuilder<RecipeStep> builder)
     {
         builder.HasKey(u => u.Id);
+
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
 
         builder.ComplexProperty(
             u => u.Order,
@@ -22,8 +27,6 @@ internal sealed class RecipeStepConfiguration : IEntityTypeConfiguration<RecipeS
                 .HasMaxLength(1000)
                 .HasColumnName(nameof(RecipeStep.Description).ToLower())
                 .IsRequired());
-
-        builder.Property(t => t.CreatedOnUtc).IsRequired();
 
         builder.HasOne<Recipe>()
               .WithMany()

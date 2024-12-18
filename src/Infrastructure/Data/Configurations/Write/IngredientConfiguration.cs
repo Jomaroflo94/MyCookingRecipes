@@ -2,6 +2,7 @@
 using Domain.Ingredients;
 using Domain.Recipes;
 using Domain.Tags;
+using Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,14 @@ internal sealed class IngredientConfiguration : IEntityTypeConfiguration<Ingredi
     public void Configure(EntityTypeBuilder<Ingredient> builder)
     {
         builder.HasKey(u => u.Id);
+
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
+        builder.Property(p => p.TagId)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
 
         builder.ComplexProperty(
             u => u.Name,
@@ -27,18 +36,16 @@ internal sealed class IngredientConfiguration : IEntityTypeConfiguration<Ingredi
                 .HasColumnName(nameof(Ingredient.Quantity).ToLower())
                 .IsRequired());
 
-        builder.Property(t => t.CreatedOnUtc).IsRequired();
-
         builder.HasOne<Tag>()
-              .WithOne()
-              .HasForeignKey<Ingredient>(s => s.TagId);
+            .WithOne()
+            .HasForeignKey<Ingredient>(s => s.TagId);
 
         builder.HasMany<RecipeIngredient>()
             .WithOne()
             .HasForeignKey(rt => rt.IngredientId);
 
         builder.HasMany<Category>()
-              .WithMany(s => s.Ingredients)
-              .UsingEntity(j => j.ToTable("IngredientCategories"));
+            .WithMany()
+            .UsingEntity(j => j.ToTable("ingredient_category"));
     }
 }

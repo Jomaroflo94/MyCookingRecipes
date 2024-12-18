@@ -20,7 +20,7 @@ internal static class IngredientEndpoints
             return await sender.Send(query, Results.Ok, cancellationToken);
         });
 
-        group.MapGet("/{ingredientId}", async (Guid ingredientId, ISender sender, 
+        group.MapGet("/{ingredientId}", async (Ulid ingredientId, ISender sender, 
             CancellationToken cancellationToken) =>
         {
             var query = new GetIngredientByIdQuery(ingredientId);

@@ -1,14 +1,11 @@
 ﻿namespace Infrastructure.Data.Entities;
-internal class RecipeRead
+internal class RecipeRead : EntityRead
 {
-    public required Guid Id { get; set; }
     public required string Name { get; set; }
     public required string Description { get; set; }
-    public required DateTime CreatedOnUtc { get; set; }
-    public DateTime? UpdatedUtc { get; set; }
 
     // Relationship
-    public IEnumerable<RecipeIngredientRead> Ingredients { get; set; }
-    public IEnumerable<RecipeStepRead> Steps { get; set; }
-    public IEnumerable<RecipeTagRead> Tags { get; set; }
+    public IEnumerable<RecipeIngredientRead> RecipeIngredients { get; set; }
+    public IEnumerable<RecipeStepRead> RecipeSteps { get; set; }
+    public IEnumerable<TagRead> Tags { get; set; }
 }

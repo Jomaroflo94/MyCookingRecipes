@@ -1,6 +1,7 @@
 ﻿using Domain.Ingredients;
 using Domain.Recipes;
 using Domain.Units;
+using Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +10,19 @@ internal class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIn
 {
     public void Configure(EntityTypeBuilder<RecipeIngredient> builder)
     {
-        builder.HasKey(rt => new { rt.Id });
+        builder.HasKey(rt => new { rt.RecipeId, rt.IngredientId, rt.UnitId });
+
+        builder.Property(p => p.RecipeId)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
+        builder.Property(p => p.IngredientId)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
+        builder.Property(p => p.UnitId)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
 
         builder.HasOne<Recipe>()
             .WithMany()

@@ -1,5 +1,6 @@
-﻿using Domain.Ingredients;
-using Domain.Recipes;
+﻿using Domain.Recipes;
+using Domain.Tags;
+using Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,6 +11,10 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
     public void Configure(EntityTypeBuilder<Recipe> builder)
     {
         builder.HasKey(u => u.Id);
+
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
 
         builder.ComplexProperty(
             u => u.Name,
@@ -25,18 +30,16 @@ internal sealed class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
                 .HasColumnName(nameof(Recipe.Description).ToLower())
                 .IsRequired());
 
-        builder.Property(t => t.CreatedOnUtc).IsRequired();
-
         builder.HasMany<RecipeIngredient>()
-              .WithOne()
-              .HasForeignKey(i => i.RecipeId);
+            .WithOne()
+            .HasForeignKey(i => i.RecipeId);
 
         builder.HasMany<RecipeStep>()
-              .WithOne()
-              .HasForeignKey(s => s.RecipeId);
+            .WithOne()
+            .HasForeignKey(s => s.RecipeId);
 
-        builder.HasMany<RecipeTag>()
-              .WithOne()
-              .HasForeignKey(rt => rt.RecipeId);
+        builder.HasMany<Tag>()
+            .WithMany()
+            .UsingEntity(j => j.ToTable("recipe_tag"));
     }
 }

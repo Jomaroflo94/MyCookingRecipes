@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Primitives" Version="0.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\nugets\Mediator.Domain\Mediator.Domain.csproj" />
     <ProjectReference Include="..\..\nugets\ROP\ROP.csproj" />
   </ItemGroup>

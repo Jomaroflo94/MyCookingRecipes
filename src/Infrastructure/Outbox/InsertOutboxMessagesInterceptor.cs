@@ -32,7 +32,7 @@ internal sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
 
         var outboxMessages = context
             .ChangeTracker
-            .Entries<Entity>()
+            .Entries<MediatorEntity>()
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
             {
@@ -43,7 +43,7 @@ internal sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
                 return domainEvents;
             })
             .Select(domainEvent => new OutboxMessage(
-                Guid.NewGuid(),
+                Ulid.NewUlid(),
                 domainEvent.GetType().Name,
                 JsonConvert.SerializeObject(domainEvent, SerializerSettings),
                 utcNow))

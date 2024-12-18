@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.Entities;
+﻿using Infrastructure.Data.Converters;
+using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +10,12 @@ internal class TagReadConfiguration : IEntityTypeConfiguration<TagRead>
     {
         builder.HasKey(t => t.Id);
 
-        builder.HasMany(t => t.RecipeTags)
-            .WithOne(rt => rt.Tag)
-            .HasForeignKey(rt => rt.TagId);
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
+        builder.HasMany(rt => rt.Recipes)
+            .WithMany(t => t.Tags)
+            .UsingEntity(j => j.ToTable("recipe_tag"));
     }
 }

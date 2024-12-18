@@ -1,5 +1,6 @@
 ﻿using Domain.Recipes;
 using Domain.Tags;
+using Infrastructure.Data.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,17 +12,15 @@ internal sealed class TagConfiguration : IEntityTypeConfiguration<Tag>
     {
         builder.HasKey(u => u.Id);
 
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
         builder.ComplexProperty(
             u => u.Name,
             b => b.Property(e => e.Value).HasColumnName(nameof(Tag.Name))
                 .HasMaxLength(50)
                 .HasColumnName(nameof(Tag.Name).ToLower())
                 .IsRequired());
-
-        builder.Property(t => t.CreatedOnUtc).IsRequired();
-
-        builder.HasMany<RecipeTag>()
-            .WithOne()
-            .HasForeignKey(rt => rt.TagId);
     }
 }

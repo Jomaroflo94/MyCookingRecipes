@@ -10,7 +10,6 @@ internal sealed class AppReadDbContext : DbContext
     public DbSet<TagRead> Tags { get; set; }
     public DbSet<RecipeRead> Recipes { get; set; }
     public DbSet<RecipeStepRead> Steps { get; set; }
-    public DbSet<RecipeTagRead> RecipeTags { get; set; }
     public DbSet<IngredientRead> Ingredients { get; set; }
     public DbSet<UnitRead> Units { get; set; }
     public DbSet<CategoryRead> Categories { get; set; }

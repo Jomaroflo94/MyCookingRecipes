@@ -32,7 +32,7 @@ internal sealed class PublishDomainEventsInterceptor : SaveChangesInterceptor
     {
         var domainEvents = context
             .ChangeTracker
-            .Entries<Entity>()
+            .Entries<MediatorEntity>()
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
             {

@@ -11,9 +11,9 @@ namespace Application.Ingredients.Create;
 internal sealed class CreateIngredientCommandHandler(IUnitOfWork unitOfWork,
     IIngredientRepository ingredientRepository,
     ITagService tagService) 
-    : ICommandHandler<CreateIngredientCommand, Guid>
+    : ICommandHandler<CreateIngredientCommand, Ulid>
 {
-    public async Task<Result<Guid>> Handle(CreateIngredientCommand command, 
+    public async Task<Result<Ulid>> Handle(CreateIngredientCommand command, 
         CancellationToken cancellationToken)
     {
         return await Result.Combine(
@@ -24,7 +24,7 @@ internal sealed class CreateIngredientCommandHandler(IUnitOfWork unitOfWork,
             .Bind(async data => await CreateIngredient(data, cancellationToken));
     }
 
-    private async Task<Result<Guid>> CreateIngredient((Text, PDecimal) data, 
+    private async Task<Result<Ulid>> CreateIngredient((Text, PDecimal) data, 
         CancellationToken cancellationToken)
     {
         var ingredient = Ingredient.Create(await tagService.GetTagAsync(

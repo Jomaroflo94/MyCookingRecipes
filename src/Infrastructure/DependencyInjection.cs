@@ -8,7 +8,7 @@ using Mediator.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Primitives;
+using Primitives.Guards;
 
 namespace Infrastructure;
 

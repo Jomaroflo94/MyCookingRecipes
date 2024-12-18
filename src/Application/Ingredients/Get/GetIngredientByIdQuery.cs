@@ -2,4 +2,4 @@
 
 namespace Application.Ingredients.Get;
 
-public sealed record GetIngredientByIdQuery(Guid IngredientId) : IQuery<IngredientResponse> { }
+public sealed record GetIngredientByIdQuery(Ulid IngredientId) : IQuery<IngredientResponse> { }

@@ -18,8 +18,8 @@ public sealed class AppWriteDbContext : DbContext, IUnitOfWork
 
     public DbSet<Tag> Tags { get; set; }
     public DbSet<Recipe> Recipes { get; set; }
-    public DbSet<RecipeStep> Steps { get; set; }
-    public DbSet<RecipeTag> RecipeTags { get; set; }
+    public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
+    public DbSet<RecipeStep> RecipeSteps { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<Unit> Units { get; set; }
     public DbSet<Category> Categories { get; set; }

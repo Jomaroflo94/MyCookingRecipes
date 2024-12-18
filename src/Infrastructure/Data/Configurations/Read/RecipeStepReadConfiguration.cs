@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.Entities;
+﻿using Infrastructure.Data.Converters;
+using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,8 +10,12 @@ internal class RecipeStepReadConfiguration : IEntityTypeConfiguration<RecipeStep
     {
         builder.HasKey(u => u.Id);
 
+        builder.Property(p => p.Id)
+            .ValueGeneratedNever()
+            .HasConversion<UlidToStringConverter>();
+
         builder.HasOne(s => s.Recipe)
-              .WithMany(r => r.Steps)
+              .WithMany(r => r.RecipeSteps)
               .HasForeignKey(s => s.RecipeId);
     }
 }
