@@ -1,5 +1,4 @@
-﻿using ROP;
-using ROP.Extensions;
+﻿using Primitives.Guards;
 
 namespace Domain.Shared;
 
@@ -9,10 +8,10 @@ public sealed record Text
 
     public string Value { get; }
 
-    public static Result<Text> Create(string? text)
+    public static Text Create(string? text)
     {
-        return Result.Create(text)
-            .Ensure(value => !string.IsNullOrEmpty(text), TextErrors.Empty)
-            .Map(value => new Text(text ?? string.Empty));
+        Ensure.NotNullOrEmpty(text);
+
+        return new Text(text);
     }
 }

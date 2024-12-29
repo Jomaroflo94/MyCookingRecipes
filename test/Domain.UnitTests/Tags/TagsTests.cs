@@ -6,7 +6,7 @@ using Xunit;
 namespace Domain.UnitTests.Tags;
 public class TagsTests
 {
-    private static readonly Guid Id = Guid.NewGuid();
+    private static readonly Ulid Id = Ulid.NewUlid();
     private static readonly Text Name = new("Tag");
     private static readonly DateTime UtcNow = DateTime.UtcNow;
 

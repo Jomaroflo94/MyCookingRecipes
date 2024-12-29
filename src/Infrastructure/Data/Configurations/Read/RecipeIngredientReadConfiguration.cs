@@ -31,7 +31,7 @@ internal class RecipeIngredientReadConfiguration : IEntityTypeConfiguration<Reci
             .HasForeignKey(rt => rt.IngredientId);
 
         builder.HasOne(rt => rt.Unit)
-            .WithOne(t => t.RecipeIngredient)
-            .HasForeignKey<RecipeIngredientRead>(rt => rt.UnitId);
+            .WithMany(t => t.RecipeIngredient)
+            .HasForeignKey(rt => rt.UnitId);
     }
 }

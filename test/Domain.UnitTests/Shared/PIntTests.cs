@@ -9,25 +9,24 @@ public class PIntTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void PInt_Should_ReturnNegativeError_WhenValueIsLessOrEqualZero(int value)
+    public void PInt_Should_Throw_ArgumentOutOfRangeException_WhenValueIsLessOrEqualZero(
+        int value)
     {
         // Act
-        Result<PInt> result = PInt.Create(value);
+        Action action = () => PInt.Create(value);
 
         // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(PIntErrors.NegativeOrZero);
+        action.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
-    public void PInt_Should_ReturnNullError_WhenValueIsNull()
+    public void PInt_Should_Throw_ArgumentNullException_WhenValueIsNull()
     {
         // Act
-        Result<PInt> result = PInt.Create(null);
+        Action action = () => PInt.Create(null);
 
         // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(Error.NullValue);
+        action.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]

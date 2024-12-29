@@ -34,9 +34,8 @@ public sealed class TagService(
         var relation = Names.Join(tags, name => name, tag => tag.Name,
                 (a, b) => new { Name = a, b.Id });
 
-        IEnumerable<(Ulid, Text)> createdTags = CreateTags(relation
-            .Where(w => w.Id.Equals(Ulid.Empty))
-            .Select(s => s.Name).ToList());
+        IEnumerable<(Ulid, Text)> createdTags = CreateTags(
+            Names.Except(relation.Select(s => s.Name)).ToList());
 
         return relation.Where(w => !w.Id.Equals(Ulid.Empty))
             .Select(s => (s.Id, s.Name))

@@ -7,10 +7,12 @@ namespace API.Endpoints;
 
 internal static class IngredientEndpoints
 {
+    private const string Path = "/api/ingredients";
+
     internal static void MapIngredientEndpoints(
         this IEndpointRouteBuilder builder)
     {
-        RouteGroupBuilder group = builder.MapGroup("/api/ingredients")
+        RouteGroupBuilder group = builder.MapGroup(Path)
             .WithTags("Ingredients");
 
         group.MapGet("/", async (ISender sender, CancellationToken cancellationToken) =>
@@ -33,9 +35,11 @@ internal static class IngredientEndpoints
         {
             var command = new CreateIngredientCommand(
                 request.Name,
-                request.Quantity);
+                request.Categories);
 
-            return await sender.Send(command, Results.Created, cancellationToken);
+            return await sender.Send(command, 
+                (result) => Results.Created($"{Path}/{result}", result), 
+                cancellationToken);
         });
 
         group.MapPost("/list", async (List<CreateIngredientRequest> request, ISender sender, 
@@ -43,7 +47,9 @@ internal static class IngredientEndpoints
         {
             var command = new CreateIngredientsCommand(request);
 
-            return await sender.Send(command, Results.Created, cancellationToken);
+            return await sender.Send(command,
+                (result) => Results.Created(Path, result),
+                cancellationToken);
         });
     }
 }

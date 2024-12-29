@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data.Entities;
+﻿using Domain.Recipes;
+using Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
@@ -9,6 +10,7 @@ internal sealed class AppReadDbContext : DbContext
 
     public DbSet<TagRead> Tags { get; set; }
     public DbSet<RecipeRead> Recipes { get; set; }
+    public DbSet<RecipeIngredientRead> RecipeIngredients { get; set; }
     public DbSet<RecipeStepRead> Steps { get; set; }
     public DbSet<IngredientRead> Ingredients { get; set; }
     public DbSet<UnitRead> Units { get; set; }

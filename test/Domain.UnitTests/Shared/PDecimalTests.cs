@@ -9,25 +9,24 @@ public class PDecimalTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void PDecimal_Should_ReturnNegativeError_WhenValueIsLessOrEqualZero(decimal value)
+    public void PDecimal_Should_Throw_ArgumentOutOfRangeException_WhenValueIsLessOrEqualZero(
+        decimal value)
     {
         // Act
-        Result<PDecimal> result = PDecimal.Create(value);
+        Action action = () => PDecimal.Create(value);
 
         // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(PDecimalErrors.NegativeOrZero);
+        action.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
-    public void PDecimal_Should_ReturnNullError_WhenValueIsNull()
+    public void PDecimal_Should_Throw_ArgumentNullException_WhenValueIsNull()
     {
         // Act
-        Result<PDecimal> result = PDecimal.Create(null);
+        Action action = () => PDecimal.Create(null);
 
         // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(Error.NullValue);
+        action.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -39,8 +38,7 @@ public class PDecimalTests
         // Assert
         Result<PDecimal> test = result.Should().BeOfType<Result<PDecimal>>().Subject;
 
-        test.Errors.Should().ContainSingle()
-               .Which.Should().Be(Error.None);
+        test.Errors.Should().ContainSingle().Which.Should().Be(Error.None);
         test.IsSuccess.Should().Be(true);
         test.Value.Should().BeOfType<PDecimal>();
         test.Value.Value.Should().Be((decimal)1.2);

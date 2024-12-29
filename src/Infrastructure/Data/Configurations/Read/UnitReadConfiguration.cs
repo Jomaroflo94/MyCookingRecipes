@@ -14,8 +14,8 @@ internal class UnitReadConfiguration : IEntityTypeConfiguration<UnitRead>
             .ValueGeneratedNever()
             .HasConversion<UlidToStringConverter>();
 
-        builder.HasOne(s => s.RecipeIngredient)
+        builder.HasMany(s => s.RecipeIngredient)
             .WithOne(r => r.Unit)
-            .HasForeignKey<UnitRead>(s => s.Id);
+            .HasForeignKey(s => s.UnitId);
     }
 }

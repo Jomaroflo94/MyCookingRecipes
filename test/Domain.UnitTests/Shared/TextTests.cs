@@ -1,31 +1,23 @@
 ﻿using Domain.Shared;
 using FluentAssertions;
+using NSubstitute.ExceptionExtensions;
 using ROP;
 using Xunit;
 
 namespace Domain.UnitTests.Shared;
 public class TextTests
 {
-    [Fact]
-    public void Text_Should_ReturnEmptyError_WhenValueIsEmpty()
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void Text_Should_Throw_ArgumentNullException_WhenValueIsInvalid(
+        string? value)
     {
         // Act
-        Result<Text> result = Text.Create(string.Empty);
+        Action action = () => Text.Create(value);
 
         // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(TextErrors.Empty);
-    }
-
-    [Fact]
-    public void Text_Should_ReturnNullError_WhenValueIsNull()
-    {
-        // Act
-        Result<Text> result = Text.Create(null);
-
-        // Assert
-        result.Errors.Should().ContainSingle()
-               .Which.Should().Be(Error.NullValue);
+        action.Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -37,8 +29,7 @@ public class TextTests
         // Assert
         Result<Text> test = result.Should().BeOfType<Result<Text>>().Subject;
 
-        test.Errors.Should().ContainSingle()
-               .Which.Should().Be(Error.None);
+        test.Errors.Should().ContainSingle().Which.Should().Be(Error.None);
         test.IsSuccess.Should().Be(true);
         test.Value.Should().BeOfType<Text>();
         test.Value.Value.Should().Be("Text");

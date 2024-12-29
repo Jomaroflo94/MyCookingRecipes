@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Domain.Categories;
 using Domain.Ingredients;
 using Domain.Tags;
 using Infrastructure.Data;
@@ -41,6 +42,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppWriteDbContext>());
 
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IIngredientRepository, IngredientRepository>();
         services.AddScoped<ITagRepository, TagRepository>();
     }

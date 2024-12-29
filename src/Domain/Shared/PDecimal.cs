@@ -1,5 +1,4 @@
-﻿using ROP;
-using ROP.Extensions;
+﻿using Primitives.Guards;
 
 namespace Domain.Shared;
 public sealed record PDecimal
@@ -8,10 +7,11 @@ public sealed record PDecimal
 
     public decimal Value { get; }
 
-    public static Result<PDecimal> Create(decimal? value)
+    public static PDecimal Create(decimal? value)
     {
-        return Result.Create(value)
-            .Ensure(value => value > 0, PDecimalErrors.NegativeOrZero)
-            .Map(value => new PDecimal(value ?? 0));
+        Ensure.NotNull(value);
+        Ensure.GreaterThanZero(value.Value);
+
+        return new PDecimal(value.Value);
     }
 }

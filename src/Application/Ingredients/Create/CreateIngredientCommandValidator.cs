@@ -8,7 +8,7 @@ internal class CreateIngredientCommandValidator : AbstractValidator<CreateIngred
         RuleFor(c => c.Name)
             .NotEmpty().WithErrorCode(IngredientErrorCodes.CreateIngredient.MissingName);
 
-        RuleFor(c => c.Quantity)
-            .GreaterThan(0).WithErrorCode(IngredientErrorCodes.CreateIngredient.NegativeOrZeroQuantity);
+        RuleFor(c => c.Categories)
+            .NotEmpty().WithErrorCode(IngredientErrorCodes.CreateIngredient.MissingCategories);
     }
 }

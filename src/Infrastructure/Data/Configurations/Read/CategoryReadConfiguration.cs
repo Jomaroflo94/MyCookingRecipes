@@ -13,9 +13,5 @@ internal class CategoryReadConfiguration : IEntityTypeConfiguration<CategoryRead
         builder.Property(p => p.Id)
             .ValueGeneratedNever()
             .HasConversion<UlidToStringConverter>();
-
-        builder.HasMany(t => t.Ingredients)
-            .WithMany(s => s.Categories)
-            .UsingEntity(j => j.ToTable("ingredient_category"));
     }
 }

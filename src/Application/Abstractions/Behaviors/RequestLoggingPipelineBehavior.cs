@@ -12,7 +12,8 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
 {
     private readonly ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> _logger;
 
-    public RequestLoggingPipelineBehavior(ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> logger)
+    public RequestLoggingPipelineBehavior(
+        ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> logger)
     {
         _logger = logger;
     }
@@ -36,7 +37,8 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
         {
             using (LogContext.PushProperty("Error", result.Errors, true))
             {
-                _logger.LogError("Completed request {RequestName} with error", requestName);
+                _logger.LogError("Completed request {RequestName} with error", 
+                    requestName);
             }
         }
 

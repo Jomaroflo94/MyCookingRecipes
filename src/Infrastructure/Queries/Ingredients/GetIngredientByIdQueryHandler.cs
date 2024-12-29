@@ -1,9 +1,12 @@
 ﻿using Application.Ingredients.Get;
+using Application.Shared.Get;
 using Domain.Ingredients;
 using Infrastructure.Data;
+using Infrastructure.Data.Entities;
 using Mediator.Application.Abstractions.Messaging;
 using Microsoft.EntityFrameworkCore;
 using ROP;
+using ROP.Extensions;
 
 namespace Infrastructure.Queries.Ingredients;
 
@@ -15,22 +18,26 @@ internal sealed class GetIngredientByIdQueryHandler(AppReadDbContext dbContext)
         GetIngredientByIdQuery query, 
         CancellationToken cancellationToken)
     {
-        IngredientResponse? ingredient = await dbContext.Ingredients
-            .Where(u => u.Id == query.IngredientId)
-            .Select(u => new IngredientResponse
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Quantity = u.Quantity
-            })
-            .FirstOrDefaultAsync(cancellationToken);
+        return Result.Create(await dbContext.Ingredients
+                    .Include(i => i.Categories)
+                    .FirstOrDefaultAsync(u => u.Id == query.IngredientId, 
+                        cancellationToken), 
+                IngredientErrors.NotFound(query.IngredientId))
+            .Map(SetResponse);
+    }
 
-        if (ingredient is null)
+    private static IngredientResponse SetResponse(
+        IngredientRead ingredient)
+    {
+        return new IngredientResponse
         {
-            return Result.Failure<IngredientResponse>(
-                IngredientErrors.NotFound(query.IngredientId));
-        }
-
-        return ingredient;
+            Id = ingredient.Id,
+            Name = ingredient.Name,
+            Categories = ingredient.Categories.Select(s => new EntityResponse
+            {
+                Id = s.Id,
+                Name = s.Name
+            })
+        };
     }
 }

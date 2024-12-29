@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Behaviors;
+using Domain.Categories;
 using Domain.Tags;
 using FluentValidation;
 using Mediator.Application;
@@ -20,6 +21,7 @@ public static class DependencyInjection
             typeof(DependencyInjection).Assembly,
             includeInternalTypes: true);
 
+        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ITagService, TagService>();
     }
 }

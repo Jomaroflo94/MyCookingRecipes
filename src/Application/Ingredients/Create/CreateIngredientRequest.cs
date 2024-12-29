@@ -1,3 +1,3 @@
 namespace Application.Ingredients.Create;
 
-public sealed record CreateIngredientRequest(string Name, decimal Quantity);
+public sealed record CreateIngredientRequest(string Name, List<Ulid> Categories);

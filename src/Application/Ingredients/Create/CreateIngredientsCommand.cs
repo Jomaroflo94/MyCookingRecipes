@@ -2,4 +2,4 @@
 
 namespace Application.Ingredients.Create;
 public sealed record CreateIngredientsCommand(List<CreateIngredientRequest> Ingredients)
-    : ICommand;
+    : ICommand<IEnumerable<Ulid>>;

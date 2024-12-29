@@ -5,5 +5,5 @@ internal class UnitRead : EntityRead
     public required string Symbol { get; set; }
 
     // RelationsShips
-    public RecipeIngredientRead RecipeIngredient { get; set; }
+    public IEnumerable<RecipeIngredientRead> RecipeIngredient { get; set; }
 }

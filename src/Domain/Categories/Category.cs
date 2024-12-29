@@ -1,11 +1,12 @@
-﻿using Domain.Shared;
+﻿using Domain.Ingredients;
+using Domain.Shared;
 using Primitives.Entities;
 
 namespace Domain.Categories;
 
 public sealed class Category : Entity
 {
-    private Category(Ulid id, Text name,
+    public Category(Ulid id, Text name,
         DateTime createdOnUtc) 
         : base(id, createdOnUtc) 
     {
@@ -16,10 +17,5 @@ public sealed class Category : Entity
 
     public Text Name { get; private set; }
 
-    public static Category Create(Ulid id, Text name,
-        DateTime createdOnUtc)
-    {
-        return new Category(id, name,
-            createdOnUtc);
-    }
+    public List<Ingredient> Ingredients { get; set; }
 }

@@ -1,8 +1,8 @@
-﻿namespace Application.Ingredients.Get;
+﻿using Application.Shared.Get;
 
-public sealed record IngredientResponse
+namespace Application.Ingredients.Get;
+
+public sealed record IngredientResponse : EntityResponse
 {
-    public Ulid Id { get; set; }
-    public string Name { get; set; }
-    public decimal Quantity { get; set; }
+    public IEnumerable<EntityResponse> Categories { get; set; }
 }

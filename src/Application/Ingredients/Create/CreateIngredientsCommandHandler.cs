@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Domain.Categories;
 using Domain.Ingredients;
 using Domain.Shared;
 using Domain.Tags;
@@ -10,54 +11,93 @@ namespace Application.Ingredients.Create;
 
 internal sealed class CreateIngredientsCommandHandler(IUnitOfWork unitOfWork,
     IIngredientRepository ingredientRepository,
+    ICategoryService categoryService,
     ITagService tagService) 
-    : ICommandHandler<CreateIngredientsCommand>
+    : ICommandHandler<CreateIngredientsCommand, IEnumerable<Ulid>>
 {
-    public async Task<Result> Handle(CreateIngredientsCommand command, 
+    public async Task<Result<IEnumerable<Ulid>>> Handle(
+        CreateIngredientsCommand command, 
         CancellationToken cancellationToken)
     {
-        return await Result.Combine(command.Ingredients
-            .Select(async s => 
-                await ValidateFields(s.Name, s.Quantity)).ToArray())
-            .Ensure(async e => 
-                await AreNamesUniques(e.Select(n => n.Item1).ToList(), cancellationToken),
-                    IngredientErrors.NameNotUnique)
-            .Bind(b => CreateIngredients(b, cancellationToken));
+        return await Result.Create(command.Ingredients)
+            .Ensure(ValidateNames, IngredientErrors.NamesNotUnique, cancellationToken)
+            .Bind(ValidateAndGetCategories, cancellationToken)
+            .Bind(CreateIngredients(command.Ingredients), cancellationToken);
     }
 
-    private static async Task<Result<(Text, PDecimal)>> ValidateFields(
-        string Name, decimal Quantity)
-    {
-        return await Result.Combine(
-            Text.Create(Name).ToAsync(),
-            PDecimal.Create(Quantity).ToAsync());
-    }
+    #region Private Methods
 
-    private async Task<bool> AreNamesUniques(List<Text> Names, 
+    private async Task<bool> ValidateNames(
+        List<CreateIngredientRequest> ingredients,
         CancellationToken cancellationToken)
     {
-        return await ingredientRepository
-            .AreNamesUniquesAsync(Names, cancellationToken);
+        var names = ingredients.Select(s => s.Name).ToList();
+
+        return await Result.Create(names.Select(Text.Create).ToList())
+            .Ensure(ingredientRepository.AreNamesUniquesAsync,
+                cancellationToken)
+            .Match();
     }
 
-    private async Task<Result> CreateIngredients(
-        (Text, PDecimal)[] data, 
+    private async Task<Result<List<Category>>> ValidateAndGetCategories(
+        List<CreateIngredientRequest> ingredients, 
         CancellationToken cancellationToken)
     {
-        IEnumerable<(Ulid Id, Text Name)> tags = await tagService.GetTagsAsync(
-            data.Select(s => s.Item1).ToList(), 
-            cancellationToken);
+        var categories = ingredients.Select(s => s.Categories).ToList();
 
-        IEnumerable<Ingredient> ingredients = data
-            .Join(tags, data => data.Item1, tag => tag.Name,
-                (data, tag) => new { tag.Id, data.Item1, data.Item2 })
-            .Select(s => Ingredient.Create(s.Id, s.Item1, s.Item2, 
-                DateTime.UtcNow));
-
-        ingredientRepository.Insert(ingredients.ToList());
-
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return Result.Success();
+        return await Result.Create(categories)
+            .Ensure(e => e.Any(a => a.Count != 0), CategoryErrors.Empty)
+            .Map(m => m.SelectMany(s => s).Distinct().ToList())
+            .Bind(categoryService.ValidateAndGetCategories, cancellationToken);
     }
+
+    private Func<List<Category>, CancellationToken, Task<Result<IEnumerable<Ulid>>>> 
+        CreateIngredients(List<CreateIngredientRequest> list)
+    {
+        return async (categories, cancellationToken) =>
+        {
+            IEnumerable<(Ulid Id, Text Name)> tags = await tagService
+                .GetTagsAsync(list.Select(s => Text.Create(s.Name)).ToList(),
+                    cancellationToken);
+
+            var ingredientsWithTags = list.Join(tags,
+                ingredient => ingredient.Name,
+                tag => tag.Name.Value,
+                (ingredient, tag) => new { 
+                    tag.Id, 
+                    tag.Name, 
+                    ingredient.Categories 
+                });
+
+            var finalIngredients = ingredientsWithTags.Select(ingredient =>
+            {
+                var associatedCategories = ingredient.Categories
+                    .Join(categories,
+                          categoryId => categoryId, 
+                          category => category.Id,
+                          (categoryId, category) => category)
+                    .ToList();
+
+                return new
+                {
+                    ingredient.Id,
+                    ingredient.Name,
+                    Categories = associatedCategories
+                };
+            });
+
+            var ingredientEntities = finalIngredients
+                .Select(s => Ingredient.Create(s.Id, s.Name, 
+                    s.Categories, DateTime.UtcNow))
+                .ToList();
+
+            ingredientRepository.Insert(ingredientEntities);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result.Success(ingredientEntities.Select(i => i.Id));
+        };
+    }
+
+    #endregion
 }

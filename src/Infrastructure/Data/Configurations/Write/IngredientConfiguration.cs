@@ -29,13 +29,6 @@ internal sealed class IngredientConfiguration : IEntityTypeConfiguration<Ingredi
                 .HasColumnName(nameof(Ingredient.Name).ToLower())
                 .IsRequired());
 
-        builder.ComplexProperty(
-            u => u.Quantity,
-            b => b.Property(e => e.Value).HasColumnName(nameof(Ingredient.Quantity))
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName(nameof(Ingredient.Quantity).ToLower())
-                .IsRequired());
-
         builder.HasOne<Tag>()
             .WithOne()
             .HasForeignKey<Ingredient>(s => s.TagId);
@@ -44,8 +37,8 @@ internal sealed class IngredientConfiguration : IEntityTypeConfiguration<Ingredi
             .WithOne()
             .HasForeignKey(rt => rt.IngredientId);
 
-        builder.HasMany<Category>()
-            .WithMany()
+        builder.HasMany(s => s.Categories)
+            .WithMany(s => s.Ingredients)
             .UsingEntity(j => j.ToTable("ingredient_category"));
     }
 }

@@ -3,7 +3,6 @@
 internal class IngredientRead : EntityRead
 {
     public required string Name { get; set; }
-    public required decimal Quantity { get; set; }
 
     // Foreign Keys
     public Ulid TagId { get; set; }

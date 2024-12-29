@@ -19,7 +19,8 @@ public sealed class Tag : MediatorEntity
     {
         var tag = new Tag(id, name, createdOnUtc);
 
-        tag.Raise(new TagCreatedDomainEvent(tag.Id));
+        //TODO: Revisar
+        //tag.Raise(new TagCreatedDomainEvent(tag.Id));
 
         return tag;
     }
